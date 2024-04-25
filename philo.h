@@ -6,7 +6,7 @@
 /*   By: dabae <dabae@student.42perpignan.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:41:34 by dabae             #+#    #+#             */
-/*   Updated: 2024/04/22 16:28:38 by dabae            ###   ########.fr       */
+/*   Updated: 2024/04/25 13:40:47 by dabae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,19 @@ typedef struct s_param
 {
 	int				num_philo;
 	int				num_must_eat;
-	int				stop;
-	int				num_full;
 	uint64_t		time_to_die;
 	uint64_t		time_to_eat;
 	uint64_t		time_to_sleep;
+
+	int				stop;
+	pthread_mutex_t	stop_lock;
+	int				num_full;
+	pthread_mutex_t	lock;
 
 	struct s_philo	*philo;
 	pthread_t		*tids;
 	pthread_mutex_t	print;
 	pthread_mutex_t	*forks;
-	pthread_mutex_t	lock;
 }				t_param;
 
 typedef struct s_philo

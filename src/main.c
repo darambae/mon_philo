@@ -6,7 +6,7 @@
 /*   By: dabae <dabae@student.42perpignan.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/08 10:42:53 by dabae             #+#    #+#             */
-/*   Updated: 2024/04/25 13:10:21 by dabae            ###   ########.fr       */
+/*   Updated: 2024/04/25 13:45:31 by dabae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	ft_exit(t_param *param, int err, char *msg)
 	}
 	pthread_mutex_destroy(&param->print);
 	pthread_mutex_destroy(&param->lock);
+	pthread_mutex_destroy(&param->stop_lock);
 	cleanup(param);
 	if (err)
 	{
@@ -52,7 +53,6 @@ void	ft_exit(t_param *param, int err, char *msg)
 	}
 	else
 		exit(0);
-	
 }
 
 static void	only_one_philo(t_param *param)

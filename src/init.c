@@ -6,7 +6,7 @@
 /*   By: dabae <dabae@student.42perpignan.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/16 14:42:55 by dabae             #+#    #+#             */
-/*   Updated: 2024/04/22 16:22:39 by dabae            ###   ########.fr       */
+/*   Updated: 2024/04/25 13:41:04 by dabae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ void	init_param(t_param *param, char **args)
 	{
 		pthread_mutex_init(&param->print, NULL);
 		pthread_mutex_init(&param->lock, NULL);
+		pthread_mutex_init(&param->stop_lock, NULL);
 		param->stop = 0;
 		param->num_full = 0;
 		param->num_philo = (int) ft_atoi(args[0]);

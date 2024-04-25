@@ -6,7 +6,7 @@
 /*   By: dabae <dabae@student.42perpignan.fr>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/12 10:25:19 by dabae             #+#    #+#             */
-/*   Updated: 2024/04/22 16:40:53 by dabae            ###   ########.fr       */
+/*   Updated: 2024/04/25 13:41:55 by dabae            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 static int	eat_phase(t_philo *philo)
 {
-	if (philo->param->num_philo == 1)
-		return (1);
+	// if (philo->param->num_philo == 1)
+	// 	return (1);
 	take_forks(philo);
 	change_state(philo, EAT);
 	print(philo, " is eating");
@@ -36,6 +36,25 @@ static void	think_phase(t_philo *philo)
 	print(philo, " is thinking");
 }
 
+int	check_to_stop(t_philo *philo)
+{
+	pthread_mutex_lock(&philo->param->stop_lock);
+	if (philo->param->stop == 1)
+	{
+		pthread_mutex_unlock(&philo->param->stop_lock);
+		return (0);
+	}
+	pthread_mutex_unlock(&philo->param->stop_lock);
+	pthread_mutex_lock(&philo->lock);
+	if (philo->state == DEAD)
+	{
+		pthread_mutex_unlock(&philo->lock);
+		return (0);
+	}
+	pthread_mutex_unlock(&philo->lock);
+	return (1);
+}
+
 void	*life_start(void *philo)
 {
 	t_philo	*phi;
@@ -44,14 +63,15 @@ void	*life_start(void *philo)
 	phi->time_limit_to_death = get_time() + phi->param->time_to_die;
 	if (pthread_create(&phi->thread, NULL, &anyone_dead, phi) != 0)
 		return ((void *)1);
-	while (phi->param->stop == 0 && phi->state != DEAD && phi->state != FULL)
+	while (check_to_stop(phi))
 	{
-		if (eat_phase(phi) == 1)
-			break ;
-		if (phi->state == DEAD || phi->param->stop == 1 || phi->state == FULL)
+		if (!check_to_stop(phi))
+			break ;	
+		eat_phase(phi);
+		if (!check_to_stop(phi))
 			break ;
 		sleep_phase(phi);
-		if (phi->state == DEAD || phi->param->stop == 1 || phi->state == FULL)
+		if (!check_to_stop(phi))
 			break ;
 		think_phase(phi);
 	}
